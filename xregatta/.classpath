@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <classpath>
-  <classpathentry kind="src" path="src/java">
+  <classpathentry kind="src" path="src\java">
   </classpathentry>
-  <classpathentry kind="src" path="src/test">
+  <classpathentry output="target\test-classes" kind="src" path="src\test">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar">
   </classpathentry>
@@ -11,8 +11,6 @@
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/jdom/jars/jdom-b9.jar">
   </classpathentry>
-  <classpathentry kind="lib" path="target/test-classes">
-  </classpathentry>
-  <classpathentry kind="output" path="target/classes">
+  <classpathentry kind="output" path="target\classes">
   </classpathentry>
 </classpath>

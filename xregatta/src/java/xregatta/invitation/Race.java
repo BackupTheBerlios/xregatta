@@ -21,14 +21,22 @@
 package xregatta.invitation;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
 
+import org.jdom.Comment;
 import org.jdom.Element;
 
+import xregatta.common.constraint.AbstractConstraint;
+import xregatta.common.constraint.AgeGroupConstraint;
+import xregatta.common.constraint.LevelConstraint;
+import xregatta.common.constraint.LightweightConstraint;
 import xregatta.util.IdBroker;
 
 
@@ -36,7 +44,7 @@ import xregatta.util.IdBroker;
  * Race Represents a race in the enclosing invitation
  *
  * @author Tammo van Lessen
- * @version $Id: Race.java,v 1.4 2004/04/22 20:05:14 vanto Exp $
+ * @version $Id: Race.java,v 1.5 2004/04/22 22:51:54 vanto Exp $
  */
 public class Race
 {
@@ -52,9 +60,8 @@ public class Race
 
     private Costs costs;
     private Date date;
-    private List categories = new ArrayList();
-	private List groups = new ArrayList();
-    private Set properties = new HashSet();
+	//private List groups = new ArrayList();
+    private SortedSet constraints = new TreeSet(new ConstraintComparator());
     private String distanceUnit = METER;
     private String gender;
     private String id;
@@ -70,12 +77,14 @@ public class Race
      *
      * @return class
      */
-    public int[] getCategories()
+    public int[] getLevels()
     {
-        int[] array = new int[categories.size()];
+        Set l = findConstraintsById(LevelConstraint.ID, LevelConstraint.NS);
+    	int[] array = new int[l.size()];
 
-        for (int i = 0; i < categories.size(); i++) {
-            array[i] = ((Integer) categories.get(i)).intValue();
+    	Iterator it = l.iterator();
+    	for (int i = 0; it.hasNext(); i++) {
+            array[i] = Integer.parseInt(((AbstractConstraint)it.next()).getValue());
         }
 
         return array;
@@ -188,11 +197,20 @@ public class Race
      */
     public void setLightweight(boolean lgw)
     {
-        if (lgw) {
-            properties.add(LIGHTWEIGHT_RULE);
-        } else {
-            properties.remove(LIGHTWEIGHT_RULE);
-        }
+    	Iterator it = constraints.iterator();
+    	while (it.hasNext()) {
+    		AbstractConstraint constr = (AbstractConstraint)it.next();
+    		if ((constr.getId().equals(LightweightConstraint.ID) 
+    				&& (constr.getNamespace().equals(LightweightConstraint.NS)))) {
+    			it.remove();
+    		}
+    	}
+    	
+    	if (lgw) {
+    		AbstractConstraint constr = new LightweightConstraint();
+    		constr.setValue("true");
+    		addConstraint(constr);
+    	}
     }
 
     /**
@@ -202,7 +220,8 @@ public class Race
      */
     public boolean isLightweight()
     {
-        return properties.contains(LIGHTWEIGHT_RULE);
+    	Set l = findConstraintsById(LightweightConstraint.ID, LightweightConstraint.NS);
+		return (l != null);
     }
 
     /**
@@ -232,9 +251,9 @@ public class Race
      *
      * @return race properties
      */
-    public Set getProperties()
+    public Set getConstraints()
     {
-        return properties;
+        return constraints;
     }
 
     /**
@@ -282,46 +301,76 @@ public class Race
      *
      * @param clazz
      */
-    public void addCategory(int clazz)
+    public void addLevel(int level)
     {
-        categories.add(new Integer(clazz));
+		AbstractConstraint constr = new LevelConstraint();
+		constr.setValue(Integer.toString(level));
+
+		if (!constraints.contains(constr)) {
+			addConstraint(constr);	
+		}
     }
 
 	/**
-	 * Remove race category
+	 * Remove race level
 	 * 
 	 * @param clazz
 	 */
-	public void removeCategory(int clazz) {
-		categories.remove(new Integer(clazz));	
-	}
-	
-	public void addAgeGroup(int year) {
-		groups.add(new Integer(year));
-	}
-	
-	public void removeAgeGroup(int year) {
-		groups.remove(new Integer(year));
-	}
-	
-	public int[] getAgeGroups() {
-		int[] array = new int[groups.size()];
-
-		for (int i = 0; i < groups.size(); i++) {
-			array[i] = ((Integer) groups.get(i)).intValue();
+	public void removeLevel(int level) {
+		AbstractConstraint constr = new LevelConstraint();
+		constr.setValue(Integer.toString(level));
+		
+		// this works because of AbstractConstraint.equals()/hashCode()
+		if (constraints.contains(constr)) {
+			constraints.remove(constr);	
 		}
-
-		return array;
 	}
 	
-    /**
-     * Add race property
+	public void setAgeGroup(int min, int max) {
+    	Iterator it = constraints.iterator();
+    	while (it.hasNext()) {
+    		AbstractConstraint constr = (AbstractConstraint)it.next();
+    		if ((constr.getId().equals(AgeGroupConstraint.ID) 
+    				&& (constr.getNamespace().equals(LightweightConstraint.NS)))) {
+    			it.remove();
+    		}
+    	}
+		
+    	AgeGroupConstraint constr = new AgeGroupConstraint();
+		constr.setMinAge(min);
+		constr.setMaxAge(max);
+		addConstraint(constr);	
+		
+	}
+	
+	public int getMinAge() {
+		AgeGroupConstraint constr = (AgeGroupConstraint)findFirstConstraintsById(AgeGroupConstraint.ID, AgeGroupConstraint.NS);
+		if (constr == null) {
+			return -1;
+		}
+		else {
+			return constr.getMinAge();
+		}
+	}
+	
+	public int getMaxAge() {
+		AgeGroupConstraint constr = (AgeGroupConstraint)findFirstConstraintsById(AgeGroupConstraint.ID, AgeGroupConstraint.NS);
+		if (constr == null) {
+			return -1;
+		}
+		else {
+			return constr.getMaxAge();
+		}
+	}
+
+	/**
+     * Add race constraint
      *
      * @param property race property
      */
-    public void addProperty(String property)
+    public void addConstraint(AbstractConstraint constraint)
     {
-        properties.add(property);
+        constraints.add(constraint);
     }
 
     /**
@@ -477,33 +526,34 @@ public class Race
                 this.distance).setAttribute("unit", distanceUnit));
 
         // classes
-        Element classes = new Element("classes", Invitation.NAMESPACE);
+        /*Element classes = new Element("classes", Invitation.NAMESPACE);
 
         for (int i = 0; i < getCategories().length; i++) {
             classes.addContent(new Element("class", Invitation.NAMESPACE).setText(
                     "" + getCategories()[i]));
         }
 
-        el.addContent(classes);
+        el.addContent(classes);*/
 
         // contraints
         Element constraints = new Element("constraints", Invitation.NAMESPACE);
-        Iterator constraintsIt = getProperties().iterator();
+        Iterator constraintsIt = getConstraints().iterator();
 
         while (constraintsIt.hasNext()) {
-            constraints.addContent(new Element("constraint", Invitation.NAMESPACE).setText(
-                    (String) constraintsIt.next()));
+            AbstractConstraint constr = (AbstractConstraint) constraintsIt.next(); 
+        	constraints.addContent(new Comment(constr.getDescription()));
+            constraints.addContent(constr.getElement());
         }
 
         el.addContent(constraints);
 
-		// age groups
+/*		// age groups
 		Element groups = new Element("age-groups", Invitation.NAMESPACE);
 		for (int i = 0; i < getAgeGroups().length; i++) {
 			groups.addContent(new Element("age-group", Invitation.NAMESPACE).setText(
 					"" + getAgeGroups()[i]));
 		}
-		el.addContent(groups);
+		el.addContent(groups);*/
 
         // costs
         if (costs != null) {
@@ -538,5 +588,59 @@ public class Race
     {
         return gender;
     }
+    
+    /**
+     * Finds constraints by id and namespace.
+     * Returns null if nothing was found.
+     * 
+     * @param id
+     * @param namespace
+     * @return
+     */
+    private Set findConstraintsById(String id, String namespace) {
+    	Set result = new HashSet();
+    	
+    	Iterator it = constraints.iterator();
+    	while (it.hasNext()) {
+    		AbstractConstraint constr = (AbstractConstraint)it.next();
+    		if ((constr.getId() == id) && (constr.getNamespace() == namespace)) {
+    			result.add(constr);
+    		}
+    	}
+    	
+    	return (result.size() != 0) ? result : null;
+    }
+
+    /**
+     * Finds the first constraint by id and namespace.
+     * Returns null if nothing was found.
+     * 
+     * @param id
+     * @param namespace
+     * @return
+     */
+    private AbstractConstraint findFirstConstraintsById(String id, String namespace) {
+    	Iterator it = constraints.iterator();
+    	while (it.hasNext()) {
+    		AbstractConstraint constr = (AbstractConstraint)it.next();
+    		if ((constr.getId() == id) && (constr.getNamespace() == namespace)) {
+    			return constr;
+    		}
+    	}
+    	return null;
+    }
+
+    /**
+	 */
+	public class ConstraintComparator implements Comparator {
+
+		public int compare(Object o1, Object o2) {
+			AbstractConstraint c1 = (AbstractConstraint)o1;
+			AbstractConstraint c2 = (AbstractConstraint)o2;
+			String s1 = c1.getNamespace() + c1.getId() + c1.getValue();
+			String s2 = c2.getNamespace() + c2.getId() + c2.getValue();
+			return s1.compareTo(s2);
+		}
+	}
 
 }

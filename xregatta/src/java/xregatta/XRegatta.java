@@ -70,14 +70,15 @@ public class XRegatta
 
         Race s = new Race();
         s.setId("1");
-        s.addCategory(Race.I);
-        s.addCategory(Race.II);
+        s.addLevel(Race.I);
+        s.addLevel(Race.II);
         s.setDate(new Date());
         s.setDistance(2000);
         s.setLightweight(true);
         s.setShortIdentifier("SM 2x A LG");
         s.setRemarks("Wanderpokal");
-
+        s.setAgeGroup(16,18);
+        
         Costs c = new Costs();
         c.setEntryFee(12.4f);
         c.setCurrency("EUR");
@@ -112,7 +113,7 @@ public class XRegatta
 
         inv.setDescription("Südwestdeutsche Meisterschaften im Acker");
 
-        XMLOutputter outputter = new XMLOutputter("  ", true);
+        XMLOutputter outputter = new XMLOutputter("    ", true);
         outputter.setEncoding("ISO-8859-1");
 
         Document xregatta = new Document(new Element("xregatta",
