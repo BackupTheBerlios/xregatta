@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xs:schema targetNamespace="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/vcard-rdf/3.0#" elementFormDefault="qualified">
+	<xs:annotation>
+		<xs:documentation xml:lang="fr">
+    Schéma vCard v3.0
+
+    espace de noms conseillé conseillé vc:xmlns="http://imc.org/vCard/3.0#"
+        selon http://www.w3.org/TR/vcard-rdf
+
+        vCard est au départ un format texte d'échange de cartes de
+    visite (v2.0 1997). Il a été adopté par l'informatique nomade 
+    (téléphones portable, palms...). La structure de champs répétables
+    convient très bien au formalisme XML.
+        Il permet de transcrire la plupart des informations publiques
+    sur une personne (noms, adresses, télécoms, titres et organisations...).
+    Ce format suffit à la majorité des cas ou la conservation
+    d'information personnelle est réglementée.
+
+    écrit par frederic.glorieux@ajlsm.com
+
+    à partir de la DTD officielle 
+    http://www.globecom.net/ietf/draft/draft-dawson-vcard-xml-dtd-03.html
+
+
+</xs:documentation>
+		<xs:documentation xml:lang="en">
+    vCard v3.0 XML Schema
+
+    hand edited by frederic.glorieux@ajlsm.com, 
+
+    from official DTD
+    http://www.globecom.net/ietf/draft/draft-dawson-vcard-xml-dtd-03.html
+    Internet Draft, Frank Dawson, Lotus             
+
+    namespace URI vc:xmlns="http://imc.org/vCard/3.0#"
+        from http://www.w3.org/TR/vcard-rdf
+       
+
+</xs:documentation>
+	</xs:annotation>
+	<!--
+     |    GLOBAL ELEMENTS
+     |-->
+	<xs:element name="vCardSet">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="vCard" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="vCard" type="vCard"/>
+	<!--
+     |    COMPLEX TYPES
+     |-->
+	<!-- vCard -->
+	<xs:complexType name="vCard">
+		<xs:sequence>
+			<xs:group ref="required"/>
+			<xs:group ref="optional" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="lang" type="xs:string"/>
+		<xs:attribute name="version" type="xs:string" fixed="3.0"/>
+		<xs:attribute name="rev" type="xs:string"/>
+		<xs:attribute name="uid" type="xs:string"/>
+		<xs:attribute name="prodid" type="xs:string"/>
+		<xs:attribute name="class" default="PUBLIC">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="PUBLIC"/>
+					<xs:enumeration value="PRIVATE"/>
+					<xs:enumeration value="CONFIDENTIAL"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<!-- ???
+        <xs:attribute name="value" type="xs:NOTATION"/>
+        -->
+	</xs:complexType>
+	<!-- name -->
+	<xs:complexType name="n">
+		<xs:sequence>
+			<xs:element name="family" type="localized" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="given" type="localized" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="other" type="localized" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="prefix" type="localized" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="suffix" type="localized" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- address -->
+	<xs:complexType name="adr">
+		<xs:sequence>
+			<xs:element name="pobox" type="localized" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="extadd" type="localized" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="street" type="localized" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="locality" type="localized" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="region" type="localized" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="pcode" type="localized" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="country" type="localized" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="type" type="del.type"/>
+		<xs:attribute name="del.type" type="del.type"/>
+	</xs:complexType>
+	<!--
+     |    SHORT TYPES
+     |-->
+	<xs:complexType name="localized">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="lang" type="xs:string"/>
+				<xs:attribute name="value" fixed="TEXT"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="uri">
+		<xs:attribute name="uri" type="xs:anyURI" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="binary">
+		<xs:choice>
+			<xs:group ref="extref"/>
+			<xs:element name="b64bin">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:base64Binary">
+							<xs:attribute name="value" fixed="BINARY"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="date">
+		<xs:simpleContent>
+			<xs:extension base="xs:date">
+				<xs:attribute name="value" fixed="DATE"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!-- tel -->
+	<xs:complexType name="tel">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="type" type="tel.type"/>
+				<xs:attribute name="tel.type" type="tel.type"/>
+				<xs:attribute name="value" fixed="PHONE-NUMBER"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="geo">
+		<xs:sequence>
+			<xs:element name="lat"/>
+			<xs:element name="lon"/>
+			<!-- latitude -->
+			<!-- longitude -->
+		</xs:sequence>
+	</xs:complexType>
+	<!--
+     |    SIMPLE TYPES
+     |-->
+	<xs:simpleType name="mimes-sound">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="mimes-image">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="tel.type">
+		<xs:list>
+			<xs:simpleType>
+				<xs:restriction base="xs:Name">
+					<xs:enumeration value="HOME"/>
+					<xs:enumeration value="WORK"/>
+					<xs:enumeration value="MSG"/>
+					<xs:enumeration value="PREF"/>
+					<xs:enumeration value="VOICE"/>
+					<xs:enumeration value="FAX"/>
+					<xs:enumeration value="CELL"/>
+					<xs:enumeration value="VIDEO"/>
+					<xs:enumeration value="PAGER"/>
+					<xs:enumeration value="BBS"/>
+					<xs:enumeration value="MODEM"/>
+					<xs:enumeration value="CAR"/>
+					<xs:enumeration value="ISDN"/>
+					<xs:enumeration value="PCS"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:list>
+	</xs:simpleType>
+	<xs:simpleType name="del.type">
+		<xs:list>
+			<xs:simpleType>
+				<xs:restriction base="xs:Name">
+					<xs:enumeration value="HOME"/>
+					<xs:enumeration value="WORK"/>
+					<xs:enumeration value="INTL"/>
+					<xs:enumeration value="DOM"/>
+					<xs:enumeration value="POSTAL"/>
+					<xs:enumeration value="PARCEL"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:list>
+	</xs:simpleType>
+	<xs:simpleType name="email.type">
+		<xs:list>
+			<xs:simpleType>
+				<xs:restriction base="xs:Name">
+					<xs:enumeration value="INTERNET"/>
+					<xs:enumeration value="X.400"/>
+					<xs:enumeration value="PREF"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:list>
+	</xs:simpleType>
+	<!--
+     |    GROUPS
+     |-->
+	<xs:group name="required">
+		<xs:sequence>
+			<xs:element name="fn" type="localized"/>
+			<xs:element name="n" type="n"/>
+		</xs:sequence>
+	</xs:group>
+	<!-- The optional properties in a vCard -->
+	<xs:group name="optional">
+		<xs:choice>
+			<xs:group ref="identification"/>
+			<xs:group ref="address"/>
+			<xs:group ref="telecoms"/>
+			<xs:group ref="organization"/>
+			<xs:group ref="geographic"/>
+			<xs:group ref="security"/>
+			<xs:group ref="more"/>
+		</xs:choice>
+	</xs:group>
+	<!-- Identification properties -->
+	<xs:group name="identification">
+		<xs:choice>
+			<xs:element name="nickname" type="localized"/>
+			<xs:element name="bday" type="date"/>
+			<xs:element name="photo">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="binary">
+							<xs:attribute name="type" type="mimes-image" use="required"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:group>
+	<!-- Delivery addressing properties -->
+	<xs:group name="address">
+		<xs:choice>
+			<xs:element name="label">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="localized">
+							<xs:attribute name="type" type="del.type"/>
+							<xs:attribute name="del.type" type="del.type"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="adr" type="adr"/>
+		</xs:choice>
+	</xs:group>
+	<!-- Telecommunications addressing properties -->
+	<xs:group name="telecoms">
+		<xs:choice>
+			<xs:element name="tel" type="tel"/>
+			<xs:element name="email">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="type" type="email.type"/>
+							<xs:attribute name="email.type" type="email.type"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="mailer" type="localized"/>
+		</xs:choice>
+	</xs:group>
+	<!-- Geographical properties -->
+	<xs:group name="geographic">
+		<xs:choice>
+			<xs:element name="geo" type="geo"/>
+			<xs:element name="tz">
+				<xs:complexType>
+					<xs:attribute name="value" fixed="UTC-OFFSET"/>
+				</xs:complexType>
+			</xs:element>
+			<!-- tz holds an ISO 8601 formatted time zone offset. -->
+		</xs:choice>
+	</xs:group>
+	<!-- Organizational properties -->
+	<xs:group name="organization">
+		<xs:choice>
+			<xs:element name="title" type="localized"/>
+			<xs:element name="role" type="localized"/>
+			<xs:element name="logo">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="binary">
+							<xs:attribute name="type" type="mimes-image" use="required"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="agent">
+				<xs:complexType>
+					<xs:choice>
+						<xs:element ref="vCard"/>
+						<xs:group ref="extref"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="org">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="orgname" type="localized"/>
+						<xs:element name="orgunit" type="localized" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:group>
+	<!-- Explanatory propeties -->
+	<xs:group name="more">
+		<xs:choice>
+			<xs:element name="categories">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="item" type="localized"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="note" type="localized"/>
+			<xs:element name="sort" type="localized"/>
+			<xs:element name="sound">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="binary">
+							<xs:attribute name="type" type="mimes-sound" use="required"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="url" type="uri"/>
+		</xs:choice>
+	</xs:group>
+	<!-- Security properties -->
+	<xs:group name="security">
+		<xs:choice>
+			<xs:element name="key" type="binary"/>
+		</xs:choice>
+	</xs:group>
+	<!--
+     |    SMALL GROUPS
+     |-->
+	<xs:group name="extref">
+		<xs:choice>
+			<xs:element name="extref" type="uri"/>
+		</xs:choice>
+	</xs:group>
+</xs:schema>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- 
+=========================================================================== 
+*    This file is part of row@re
+*
+*    row@re is free software; you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation; either version 2 of the License, or
+*    (at your option) any later version.
+*
+*    Foobar is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License
+*    along with Foobar; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+=========================================================================== 
+-->
+
+<!-- 
+=========================================================================== 
+*	XMLSchema für Listen die in allen xregatta-formaten vorkommen.
+=========================================================================== 
+*	$Id: xregatta-lists.xsd,v 1.1 2003/05/05 12:06:19 vanto Exp $
+=========================================================================== 
+-->
+<xs:schema 
+	xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	elementFormDefault="qualified" 
+	attributeFormDefault="unqualified"
+>
+
+	<!-- IMPORTS -->
+	<xs:import namespace="http://www.w3.org/2001/vcard-rdf/3.0#" schemaLocation="vcard.xsd"/>
+
+	<!-- ELEMENTS -->
+	<xs:complexType name="listenContainer">
+		<xs:all>
+			<xs:element ref="datumsliste" form="qualified"/>
+			<xs:element ref="klassenliste" form="qualified"/>
+			<xs:element ref="kostenliste" form="qualified"/>
+			<xs:element ref="adressenliste" form="qualified"/>
+			<xs:element ref="streckenliste" form="qualified"/>
+		</xs:all>
+	</xs:complexType>
+
+	<xs:element name="listen" type="listenContainer"/>
+
+	<xs:complexType name="klassenlistItemType">
+		<xs:attribute name="id" type="xs:ID" use="required"/>
+		<xs:attribute name="koid" type="xs:IDREF" use="required"/>
+		<xs:attribute name="nakoid" type="xs:IDREF" use="optional"/>
+		<xs:attribute name="rekoid" type="xs:IDREF" use="optional"/>
+		<xs:attribute name="stid" type="xs:IDREF" use="required"/>
+		<xs:attribute name="lgw" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute name="pokal" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute name="rgm" type="xs:boolean" use="optional" default="true"/>
+	</xs:complexType>
+
+	<xs:complexType name="streckenlistItemType">
+		<xs:simpleContent>
+			<xs:extension base="xs:positiveInteger">
+				<xs:attribute name="id" type="xs:ID" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="kostenlistItemType">
+		<xs:simpleContent>
+			<xs:extension base="xs:integer">
+				<xs:attribute name="id" type="xs:ID" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="datumlistItemType">
+		<xs:simpleContent>
+			<xs:extension base="xs:dateTime">
+				<xs:attribute name="id" type="xs:ID" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:element name="datumsliste">
+		<xs:annotation>
+			<xs:documentation>Liste aller Datumseinträge</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element name="item" type="datumlistItemType">
+					<xs:annotation>
+						<xs:documentation>Datumseintrag</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="kostenliste">
+		<xs:annotation>
+			<xs:documentation>Liste aller Kosteneinträge</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element name="item" type="kostenlistItemType">
+					<xs:annotation>
+						<xs:documentation>Kosteneintrag</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="einheit" type="xs:string" use="optional" default="euro"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="klassenliste">
+		<xs:annotation>
+			<xs:documentation>Liste aller Klasseneinträge</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element name="item" type="klassenlistItemType">
+					<xs:annotation>
+						<xs:documentation>Klasseneintrag - fasst Kosten, Gewichtsklassen, Pokal, Strecken und die Möglichkeit Renngemeinschaften zu melden zusammen</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="streckenliste">
+		<xs:annotation>
+			<xs:documentation>Liste aller Streckeneinträge</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element name="item" type="streckenlistItemType">
+					<xs:annotation>
+						<xs:documentation>Streckeneintrag</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="einheit" type="xs:string" use="optional" default="m"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="adressenliste">
+		<xs:annotation>
+			<xs:documentation>Liste aller Adresseneinträge</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element name="item" type="adressenItemType">
+					<xs:annotation>
+						<xs:documentation>Adresseneintrag (vcard)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="adressenItemType">
+		<xs:complexContent>
+			<xs:extension base="vcard:vCard">
+				<xs:attribute name="id" type="xs:ID" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+</xs:schema>

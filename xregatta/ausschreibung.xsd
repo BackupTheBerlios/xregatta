@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+=========================================================================== 
+*    This file is part of row@re
+*
+*    row@re is free software; you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation; either version 2 of the License, or
+*    (at your option) any later version.
+*
+*    Foobar is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License
+*    along with Foobar; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+=========================================================================== 
+-->
+
+<!-- 
+=========================================================================== 
+*	XMLSchema für Auschreibungen
+=========================================================================== 
+*	$Id: ausschreibung.xsd,v 1.1 2003/05/05 12:06:20 vanto Exp $
+=========================================================================== 
+-->
+<xs:schema targetNamespace="http://roware.berlios.de/ausschreibung/1.0" 
+	xmlns="http://roware.berlios.de/ausschreibung/1.0" 
+	xmlns:aus="http://roware.berlios.de/ausschreibung/1.0" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#" 
+	xmlns:dc="http://purl.org/dc/elements/1.1/" 
+	xmlns:xtext="http://roware.berlios.de/schema/xhtml-emb" 
+	elementFormDefault="qualified" 
+	attributeFormDefault="unqualified" 
+>
+
+	<!-- IMPORTS -->
+	<xs:import namespace="http://purl.org/dc/elements/1.1/" schemaLocation="http://www.ukoln.ac.uk/metadata/dcmi/xmlschema/dc.xsd"/>
+	<xs:import namespace="http://www.w3.org/2001/vcard-rdf/3.0#" schemaLocation="vcard.xsd"/>
+	<xs:import namespace="http://roware.berlios.de/schema/xhtml-emb" schemaLocation="xhtml-emb.xsd"/>
+	<!--	<xs:import namespace="http://purl.org/dc/terms/" schemaLocation="http://www.ukoln.ac.uk/metadata/dcmi/xmlschema/dcterms.xsd"/> -->
+
+	<!-- INCLUDES -->
+	<xs:include schemaLocation="xregatta-lists.xsd"/>
+
+	<!-- ELEMENTS -->
+	<xs:element name="regatten">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element ref="regatta"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="regatta">
+		<xs:annotation>
+			<xs:documentation>Regattainstanz</xs:documentation>
+		</xs:annotation>
+
+		<xs:complexType>
+			<xs:all>
+
+				<xs:element name="head" type="dc:elementContainer">
+					<xs:annotation>
+						<xs:documentation>Regattakopf  - enthält Metadaten (Dublincore)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+
+				<xs:element name="info">
+					<xs:annotation>
+						<xs:documentation>Regattainformationen - enhält Bezeichner und Beschreibungen</xs:documentation>
+					</xs:annotation>
+
+					<xs:complexType>
+						<xs:all>
+
+							<xs:element ref="bezeichnung"/>
+							<xs:element name="beschreibung" type="xs:string">
+								<xs:annotation>
+									<xs:documentation>Beschreibung der Regatta</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+
+							<xs:element name="ort" type="xs:string">
+								<xs:annotation>
+									<xs:documentation>Ort der Regatta</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+
+							<xs:element name="typ" type="xs:string">
+								<xs:annotation>
+									<xs:documentation>Typ der Regatta (z.B. Allgemeine Regatta, Langstrecke)</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+
+							<xs:element ref="bemerkung"/>
+							<xs:element name="veranstalter">
+								<xs:annotation>
+									<xs:documentation>Veranstalter der Regatta</xs:documentation>
+								</xs:annotation>
+
+								<xs:complexType>
+									<xs:sequence maxOccurs="unbounded">
+										<xs:element name="item" type="veranstalterItemType">
+											<xs:annotation>
+												<xs:documentation>verweist auf einen Eintrag in der der Personenliste</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+
+							<xs:element name="bankverbindung">
+								<xs:annotation>
+									<xs:documentation>Bankverbindungen</xs:documentation>
+								</xs:annotation>
+
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="bank" type="xs:string">
+											<xs:annotation>
+												<xs:documentation>Name der Bank</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+
+										<xs:element name="blz" type="xs:string">
+											<xs:annotation>
+												<xs:documentation>Bankleitzahl</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+
+										<xs:element name="konto" type="xs:string">
+											<xs:annotation>
+												<xs:documentation>Kontonummer</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+
+										<xs:element name="kennwort" type="xs:string">
+											<xs:annotation>
+												<xs:documentation>Verwendungszweck</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+
+							<xs:element name="rennabstand">
+								<xs:annotation>
+									<xs:documentation>Definition der Rennabstände</xs:documentation>
+								</xs:annotation>
+
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="item" type="rennabstandItemType" maxOccurs="unbounded">
+											<xs:annotation>
+												<xs:documentation>beschreibt Rennabstände für verschiedene Rennentypen</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="einheit" type="xs:string" use="required"/>
+								</xs:complexType>
+							</xs:element>
+
+							<xs:element name="termine">
+								<xs:annotation>
+									<xs:documentation>wichtige Termine</xs:documentation>
+								</xs:annotation>
+
+								<xs:complexType>
+									<xs:sequence maxOccurs="unbounded">
+										<xs:element name="item" type="termineItemType">
+											<xs:annotation>
+												<xs:documentation>verweist auf einen Eintrag in der Datumsliste</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+
+							<xs:element name="kosten">
+								<xs:annotation>
+									<xs:documentation>globale Kosten</xs:documentation>
+								</xs:annotation>
+
+								<xs:complexType>
+									<xs:sequence maxOccurs="unbounded">
+										<xs:element name="item" type="kostenItemType">
+											<xs:annotation>
+												<xs:documentation>verweist auf einen Eintrag in der Kostenliste</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:all>
+					</xs:complexType>
+				</xs:element>
+
+				<xs:element name="listen" type="aus:listenContainer">
+					<xs:annotation>
+						<xs:documentation>Listen</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+
+				<xs:element name="rennen">
+					<xs:annotation>
+						<xs:documentation>Alle Rennen der Regatta</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence maxOccurs="unbounded">
+							<xs:element name="item" type="rennenItemType">
+								<xs:annotation>
+									<xs:documentation>ein Rennen</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+
+				<xs:element name="text" type="xtext:bodyType">
+					<xs:annotation>
+						<xs:documentation>Textbeschreibungen (als XHTML-Subset)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:all>
+
+			<xs:attribute name="id" type="xs:hexBinary" use="required"/>
+			<xs:attribute name="vondid" type="xs:string" use="required"/>
+			<xs:attribute name="bisdid" type="xs:string" use="required"/>
+			<xs:attribute name="startplaetze" type="xs:byte" use="required"/>
+			<xs:attribute name="timetable" type="xs:boolean" use="required"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="rennabstandItemType">
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="value" type="xs:string" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="kostenItemType">
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="koid" type="xs:IDREF" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="termineItemType">
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="did" type="xs:IDREF" use="required"/>
+		<xs:attribute name="pid" type="xs:IDREF" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="veranstalterItemType">
+		<xs:attribute name="id" type="xs:ID" use="required"/>
+		<xs:attribute name="pid" type="xs:IDREF" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="rennenItemType">
+		<xs:sequence>
+			<xs:element ref="bezeichnung"/>
+			<xs:element name="leistungsklassen">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="item" type="xs:positiveInteger" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Identifikation der Leistungsklasse (als natürliche Zahl, nicht als römische)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element ref="bemerkung"/>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:ID" use="required"/>
+		<xs:attribute name="klid" type="xs:IDREF" use="required"/>
+		<xs:attribute name="koid" type="xs:IDREF" use="optional"/>
+		<xs:attribute name="did" type="xs:IDREF" use="required"/>
+		<xs:attribute name="dpos" type="xs:short" use="required"/>
+	</xs:complexType>
+
+	<xs:element name="bezeichnung" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Bezeichnung</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+
+	<xs:element name="bemerkung" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Bemerkungen</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+
+</xs:schema>
