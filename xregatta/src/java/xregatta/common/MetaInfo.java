@@ -1,5 +1,5 @@
 /* 
- * xregatta - regatta documentation exchange format
+ * xregatta - electronic regatta standards
  * http://xregatta.berlios.de
  * 
  * Copyright (C) 2003 Tammo van Lessen
@@ -31,7 +31,7 @@ import xregatta.invitation.Invitation;
  * MetaInfo
  * 
  * @author Tammo van Lessen
- * @version $Id: MetaInfo.java,v 1.1 2003/07/25 19:54:35 vanto Exp $
+ * @version $Id: MetaInfo.java,v 1.2 2003/07/25 20:06:38 vanto Exp $
  */
 public class MetaInfo {
 	public static final Namespace DC_NAMESPACE = Namespace.getNamespace("dc", "http://purl.org/dc/elements/1.1");

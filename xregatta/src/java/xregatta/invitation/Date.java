@@ -1,5 +1,5 @@
 /* 
- * xregatta - regatta documentation exchange format
+ * xregatta - electronic regatta standards
  * http://xregatta.berlios.de
  * 
  * Copyright (C) 2003 Tammo van Lessen
@@ -25,7 +25,7 @@ import org.jdom.Element;
  * Date
  * 
  * @author Tammo van Lessen
- * @version $Id: Date.java,v 1.1 2003/07/25 19:54:35 vanto Exp $
+ * @version $Id: Date.java,v 1.2 2003/07/25 20:06:38 vanto Exp $
  */
 public class Date {
 

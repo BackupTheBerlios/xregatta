@@ -1,5 +1,5 @@
 /* 
- * xregatta - regatta documentation exchange format
+ * xregatta - electronic regatta standards
  * http://xregatta.berlios.de
  * 
  * Copyright (C) 2003 Tammo van Lessen

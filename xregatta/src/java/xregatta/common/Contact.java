@@ -1,5 +1,5 @@
 /* 
- * xregatta - regatta documentation exchange format
+ * xregatta - electronic regatta standards
  * http://xregatta.berlios.de
  * 
  * Copyright (C) 2003 Tammo van Lessen
@@ -32,7 +32,7 @@ import xregatta.util.IdBroker;
  * Contact
  * 
  * @author Tammo van Lessen
- * @version $Id: Contact.java,v 1.1 2003/07/25 19:54:35 vanto Exp $
+ * @version $Id: Contact.java,v 1.2 2003/07/25 20:06:38 vanto Exp $
  */
 public class Contact {
 	protected static final Namespace VCARD_NS = Namespace.getNamespace("vcard", "http://xregatta.berlios.de/vcard");
@@ -359,12 +359,12 @@ public class Contact {
 		add(u, "family", family);
 		add(u, "given", given);
 		add(u, "middle", middle);
-		if (u.hasChildren()) el.addContent(u);
+		if (!u.getChildren().isEmpty()) el.addContent(u);
 
 		u = new Element("org", VCARD_NS);
 		add(u, "orgname", orgname);
 		add(u, "orgunit", orgunit);
-		if (u.hasChildren()) el.addContent(u);
+		if (!u.getChildren().isEmpty()) el.addContent(u);
 
 		if (work != null) {
 			addLocation(el, work, "work");
@@ -386,7 +386,7 @@ public class Contact {
 			add(u, "region", loc.region);
 			add(u, "pcode", loc.pcode);
 			add(u, "ctry", loc.country);
-			if (u.hasChildren()) {
+			if (!u.getChildren().isEmpty()) {
 				add(u, "type", name);
 				el.addContent(u);
 			} 
