@@ -25,6 +25,7 @@ import java.util.GregorianCalendar;
 
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.Namespace;
 import org.jdom.output.XMLOutputter;
 
 import xregatta.common.Contact;
@@ -44,7 +45,9 @@ public class XRegatta
 {
     //~ Static fields/initializers ---------------------------------------------
 
-	public static final String NAMESPACE = "http://xregatta.berlios.de/1.0";
+	public static final Namespace NAMESPACE = Namespace.getNamespace("x",
+		"http://xregatta.berlios.de/1.0");
+
     public static final String CREATOR = "xregatta 1.0";
 
     //~ Methods ----------------------------------------------------------------
@@ -117,12 +120,13 @@ public class XRegatta
 		Element root = xregatta.getRootElement();
         root.addContent(mi.getElement(CREATOR));
         
-        Element events = new Element("events", XRegatta.NAMESPACE);
-        root.addContent(events);
-        
+        //Element events = new Element("events", XRegatta.NAMESPACE);
+        //root.addContent(events);
+		
         Element event = new Element("event", XRegatta.NAMESPACE);
-        events.addContent(event);
-        
+        //events.addContent(event);
+		root.addContent(event);
+		
         event.addContent(inv.getElement());
         
         xregatta.getRootElement().addNamespaceDeclaration(MetaInfo.DC_NAMESPACE);
