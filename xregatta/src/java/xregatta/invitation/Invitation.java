@@ -1,26 +1,4 @@
 /*
- *  XNap
- *
- *  A pure java file sharing client.
- *
- *  See AUTHORS for copyright information.
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- */
-/*
  * xregatta - electronic regatta standards
  * http://xregatta.berlios.de
  *
@@ -48,6 +26,7 @@ import java.util.List;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
+import xregatta.common.Contact;
 import xregatta.util.IdBroker;
 
 
@@ -55,7 +34,7 @@ import xregatta.util.IdBroker;
  * Schedule
  *
  * @author Tammo van Lessen
- * @version $Id: Invitation.java,v 1.3 2003/07/26 00:47:13 vanto Exp $
+ * @version $Id: Invitation.java,v 1.4 2004/04/22 23:50:25 vanto Exp $
  */
 public class Invitation
 {
@@ -78,6 +57,10 @@ public class Invitation
     private String remarks;
     private String type;
     private String uid;
+    private Contact address;
+    private java.util.Date deadline;
+    private Contact drawingAddress;
+    private java.util.Date drawingDate;
 
     //~ Methods ----------------------------------------------------------------
 
@@ -131,6 +114,38 @@ public class Invitation
         return description;
     }
 
+    public void setAddress(Contact contact) {
+    	this.address = contact;
+    }
+    
+    public Contact getAddress() {
+    	return address;
+    }
+    
+    public void setDeadline(java.util.Date deadline) {
+    	this.deadline = deadline;
+    }
+    
+    public java.util.Date getDeadline() {
+    	return deadline;
+    }
+    
+    public void setDrawingAddress(Contact contact) {
+    	this.drawingAddress = contact;
+    }
+    
+    public Contact getDrawingAddress() {
+    	return address;
+    }
+    
+    public void setDrawingDate(java.util.Date date) {
+    	this.drawingDate = date;
+    }
+    
+    public java.util.Date getDrawingDate() {
+    	return drawingDate;
+    }
+
     /**
      * DOCUMENT ME!
      *
@@ -173,6 +188,24 @@ public class Invitation
         // bankinfo
         if (bankInformation != null) {
             el.addContent(bankInformation.getElement());
+        }
+
+        // deadline
+        if (deadline != null) {
+        	el.addContent(new Element("deadline", NAMESPACE).setText(deadline.toString()));
+        }
+
+        if (address != null) {
+        	el.addContent(new Element("address", NAMESPACE).addContent(address.getElement()));
+        }
+        
+        // drawing
+        if (drawingDate != null) {
+        	el.addContent(new Element("drawing", NAMESPACE).setText(drawingDate.toString()));
+        }
+
+        if (drawingAddress != null) {
+        	el.addContent(new Element("drawing-address", NAMESPACE).addContent(drawingAddress.getElement()));
         }
 
         // races

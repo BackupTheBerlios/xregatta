@@ -61,7 +61,23 @@ public class XRegatta
      */
     public static void main(String[] args) throws IOException
     {
-        MetaInfo mi = new MetaInfo();
+        Contact con = new Contact();
+
+        con.setBirthday(new GregorianCalendar(1979, 10, 30).getTime());
+        con.setDesc("ich bins");
+        con.setEmail("tvanlessen@taval.de");
+        con.setFullname("Tammo van Lessen");
+        con.setFamily("van Lessen");
+        con.setGender("male");
+
+        Location loc = con.new Location();
+        loc.country = "Germany";
+        loc.street = "Schlösslestr 6";
+        loc.phone = "568765";
+        con.setWork(loc);
+
+        
+    	MetaInfo mi = new MetaInfo();
         mi.setPublisher("Tammo van Lessen");
         mi.setDate(new java.util.Date());
         mi.setDescription("Ausschreibung für die Testregatta");
@@ -97,6 +113,13 @@ public class XRegatta
         inv.addRace(s);
         inv.addRace(t);
 
+        inv.setDeadline(new java.util.Date());
+        inv.setAddress(con);
+
+        inv.setDrawingDate(new java.util.Date());
+        inv.setDrawingAddress(con);
+
+        
         BankInformation bi = new BankInformation();
         bi.setAccount("123213");
         bi.setAccountOwner("Tammo van Lessen");
@@ -133,21 +156,7 @@ public class XRegatta
         xregatta.getRootElement().addNamespaceDeclaration(MetaInfo.DC_NAMESPACE);
         outputter.output(xregatta, System.out);
 
-        Contact con = new Contact();
 
-        con.setBirthday(new GregorianCalendar(1979, 10, 30).getTime());
-        con.setDesc("ich bins");
-        con.setEmail("tvanlessen@taval.de");
-        con.setFullname("Tammo van Lessen");
-        con.setFamily("van Lessen");
-        con.setGender("male");
-
-        Location loc = con.new Location();
-        loc.country = "Germany";
-        loc.street = "Schlösslestr 6";
-        loc.phone = "568765";
-        con.setWork(loc);
-
-        //outputter.output(con.getXMLTree(), System.out);
+        //outputter.output(con.getElement(), System.out);
     }
 }
