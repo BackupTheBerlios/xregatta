@@ -1,18 +1,41 @@
-/* 
+/*
+ *  XNap
+ *
+ *  A pure java file sharing client.
+ *
+ *  See AUTHORS for copyright information.
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
+/*
  * xregatta - electronic regatta standards
  * http://xregatta.berlios.de
- * 
+ *
  * Copyright (C) 2003 Tammo van Lessen
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,230 +50,341 @@ import org.jdom.Namespace;
 
 import xregatta.util.IdBroker;
 
+
 /**
  * Schedule
- * 
+ *
  * @author Tammo van Lessen
- * @version $Id: Invitation.java,v 1.2 2003/07/25 20:06:38 vanto Exp $
+ * @version $Id: Invitation.java,v 1.3 2003/07/26 00:47:13 vanto Exp $
  */
-public class Invitation {
+public class Invitation
+{
+    //~ Static fields/initializers ---------------------------------------------
 
-	public static final String NAMESPACE_URI = "http://xregatta.berlios.de/invitation";
-	public static final Namespace NAMESPACE = Namespace.getNamespace("inv", NAMESPACE_URI);
-	private String uid;
-	private String name;
-	private String description;
-	private String remarks;
-	private String type;
-	private String location;
-	private String host;
-	private List dates = new ArrayList();
-	private BankInformation bankInformation;
-	private List races = new ArrayList();
-	private List schedule = new ArrayList(); 
+    public static final String NAMESPACE_URI = "http://xregatta.berlios.de/invitation";
+    public static final Namespace NAMESPACE = Namespace.getNamespace("inv",
+            NAMESPACE_URI);
 
-	/**
-	 * @return
-	 */
-	public String getLocation() {
-		return location;
-	}
+    //~ Instance fields --------------------------------------------------------
 
-	public String getUID() {
-		return (uid != null)?uid:Long.toHexString(new java.util.Date().getTime());
-	}
-	
-	protected void setUID(String uid) {
-		this.uid = uid;
-	}
-	/**
-	 * @return
-	 */
-	public String getName() {
-		return name;
-	}
+    private BankInformation bankInformation;
+    private List dates = new ArrayList();
+    private List races = new ArrayList();
+    private List schedule = new ArrayList();
+    private String description;
+    private String host;
+    private String location;
+    private String name;
+    private String remarks;
+    private String type;
+    private String uid;
 
-	/**
-	 * @return
-	 */
-	public List getRaces() {
-		return races;
-	}
+    //~ Methods ----------------------------------------------------------------
 
-	/**
-	 * @return
-	 */
-	public String getRemarks() {
-		return remarks;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param bi
+     */
+    public void setBankInformation(BankInformation bi)
+    {
+        bankInformation = bi;
+    }
 
-	/**
-	 * @return
-	 */
-	public String getType() {
-		return type;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public BankInformation getBankInformation()
+    {
+        return bankInformation;
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setLocation(String string) {
-		location = string;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public List getDates()
+    {
+        return dates;
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setName(String string) {
-		name = string;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param string
+     */
+    public void setDescription(String string)
+    {
+        description = string;
+    }
 
-	/**
-	 * @param list
-	 */
-	public void addRace(Race race) {
-		races.add(race);
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public String getDescription()
+    {
+        return description;
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setRemarks(String string) {
-		remarks = string;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public Element getElement()
+    {
+        Element el = new Element("regatta", NAMESPACE);
+        String objId = IdBroker.getObjectId(this);
 
-	/**
-	 * @param string
-	 */
-	public void setType(String string) {
-		type = string;
-	}
+        if (objId == null) {
+            objId = IdBroker.getNextId(this);
+            IdBroker.registerObject(this, objId);
+            el.setAttribute("id", objId);
+        } else {
+            el.setAttribute("refid", objId);
 
-	public Element getXMLTree() {
-		Element el = new Element("regatta", NAMESPACE);
-		String objId = IdBroker.getObjectId(this);
-		if (objId == null) {
-			objId = IdBroker.getNextId(this);
-			IdBroker.registerObject(this, objId);
-			el.setAttribute("id", objId);
-		} else {
-			el.setAttribute("refid", objId);
-			return el;
-		}
+            return el;
+        }
 
-		// UID
-		el.setAttribute("uid", getUID());
-		// name
-		el.addContent(new Element("name", NAMESPACE).setText(this.name));
-		// description
-		el.addContent(new Element("description", NAMESPACE).setText(this.description));
-		// type
-		el.addContent(new Element("type", NAMESPACE).setText(this.type));
-		// host
-		el.addContent(new Element("host", NAMESPACE).setText(this.host));
-		// location
-		el.addContent(new Element("location", NAMESPACE).setText(this.location));
+        // UID
+        el.setAttribute("uid", getUID());
 
-		// bankinfo
-		if (bankInformation != null) {
-			el.addContent(bankInformation.getXMLTree());
-		}
-		
-		// races
-		Element races = new Element("races", NAMESPACE);
-		for (int i=0; i<this.races.size(); i++) {
-			races.addContent(((Race)this.races.get(i)).getXMLTree());
-		}
-		
-		el.addContent(races);
-		return el;
-	}
+        // name
+        el.addContent(new Element("name", NAMESPACE).setText(this.name));
 
-	/**
-	 * @param bi
-	 */
-	public void setBankInformation(BankInformation bi) {
-		bankInformation = bi;
-	}
-	
-	public BankInformation getBankInformation() {
-		return bankInformation;
-	}
-	/**
-	 * @return
-	 */
-	public List getDates() {
-		return dates;
-	}
+        // description
+        el.addContent(new Element("description", NAMESPACE).setText(
+                this.description));
 
-	/**
-	 * @return
-	 */
-	public String getDescription() {
-		return description;
-	}
+        // type
+        el.addContent(new Element("type", NAMESPACE).setText(this.type));
 
-	/**
-	 * @return
-	 */
-	public String getHost() {
-		return host;
-	}
+        // host
+        el.addContent(new Element("host", NAMESPACE).setText(this.host));
 
-	/**
-	 * @return
-	 */
-	public List getSchedule() {
-		return schedule;
-	}
+        // location
+        el.addContent(new Element("location", NAMESPACE).setText(this.location));
 
-	/**
-	 * @return
-	 */
-	public String getUid() {
-		return uid;
-	}
+        // bankinfo
+        if (bankInformation != null) {
+            el.addContent(bankInformation.getElement());
+        }
 
-	/**
-	 * @param list
-	 */
-	public void addDate(Date date) {
-		dates.add(date);
-	}
+        // races
+        Element races = new Element("races", NAMESPACE);
 
-	/**
-	 * @param string
-	 */
-	public void setDescription(String string) {
-		description = string;
-	}
+        for (int i = 0; i < this.races.size(); i++) {
+            races.addContent(((Race) this.races.get(i)).getElement());
+        }
 
-	/**
-	 * @param string
-	 */
-	public void setHost(String string) {
-		host = string;
-	}
+        el.addContent(races);
 
-	/**
-	 * @param list
-	 */
-	public void setRaces(List list) {
-		races = list;
-	}
+        return el;
+    }
 
-	/**
-	 * @param list
-	 */
-	public void setSchedule(List list) {
-		schedule = list;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param string
+     */
+    public void setHost(String string)
+    {
+        host = string;
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setUid(String string) {
-		uid = string;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public String getHost()
+    {
+        return host;
+    }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @param string
+     */
+    public void setLocation(String string)
+    {
+        location = string;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public String getLocation()
+    {
+        return location;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param string
+     */
+    public void setName(String string)
+    {
+        name = string;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public String getName()
+    {
+        return name;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param list
+     */
+    public void setRaces(List list)
+    {
+        races = list;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public List getRaces()
+    {
+        return races;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param string
+     */
+    public void setRemarks(String string)
+    {
+        remarks = string;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public String getRemarks()
+    {
+        return remarks;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param list
+     */
+    public void setSchedule(List list)
+    {
+        schedule = list;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public List getSchedule()
+    {
+        return schedule;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param string
+     */
+    public void setType(String string)
+    {
+        type = string;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public String getType()
+    {
+        return type;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public String getUID()
+    {
+        return (uid != null) ? uid
+                             : Long.toHexString(new java.util.Date().getTime());
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param string
+     */
+    public void setUid(String string)
+    {
+        uid = string;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public String getUid()
+    {
+        return uid;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param date
+     */
+    public void addDate(Date date)
+    {
+        dates.add(date);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param race
+     */
+    public void addRace(Race race)
+    {
+        races.add(race);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param uid DOCUMENT ME!
+     */
+    protected void setUID(String uid)
+    {
+        this.uid = uid;
+    }
 }
