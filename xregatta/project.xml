@@ -67,7 +67,6 @@
       <id>jdom</id>
       <version>b9</version>
      </dependency>
-     <dependency>
   </dependencies>
   
   <!-- build information for the project -->

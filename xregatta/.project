@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <projectDescription>
-  <name>app</name>
-  <comment>A collection of example projects showing how to use maven in different situations</comment>
+  <name>xregatta</name>
+  <comment>electronic regatta standards</comment>
   <projects>
   </projects>
   <buildSpec>
