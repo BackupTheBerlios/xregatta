@@ -36,13 +36,13 @@ import xregatta.util.IdBroker;
  * Race Represents a race in the enclosing invitation
  *
  * @author Tammo van Lessen
- * @version $Id: Race.java,v 1.3 2003/07/26 00:47:13 vanto Exp $
+ * @version $Id: Race.java,v 1.4 2004/04/22 20:05:14 vanto Exp $
  */
 public class Race
 {
     //~ Static fields/initializers ---------------------------------------------
 
-    public static final int I = 1;
+	public static final int I = 1;
     public static final int II = 2;
     public static final int III = 3;
     public static final String LIGHTWEIGHT_RULE = "lightweight";
@@ -52,14 +52,13 @@ public class Race
 
     private Costs costs;
     private Date date;
-    private List classes = new ArrayList();
+    private List categories = new ArrayList();
+	private List groups = new ArrayList();
     private Set properties = new HashSet();
     private String distanceUnit = METER;
     private String gender;
     private String id;
     private String longIdentifier;
-    private String maxAge;
-    private String minAge;
     private String remarks;
     private String shortIdentifier = "";
     private float distance;
@@ -71,12 +70,12 @@ public class Race
      *
      * @return class
      */
-    public int[] getClasses()
+    public int[] getCategories()
     {
-        int[] array = new int[classes.size()];
+        int[] array = new int[categories.size()];
 
-        for (int i = 0; i < classes.size(); i++) {
-            array[i] = ((Integer) classes.get(i)).intValue();
+        for (int i = 0; i < categories.size(); i++) {
+            array[i] = ((Integer) categories.get(i)).intValue();
         }
 
         return array;
@@ -279,15 +278,42 @@ public class Race
     }
 
     /**
-     * Add race class (Leistungsklasse)
+     * Add race category (Leistungsklasse)
      *
      * @param clazz
      */
-    public void addClass(int clazz)
+    public void addCategory(int clazz)
     {
-        classes.add(new Integer(clazz));
+        categories.add(new Integer(clazz));
     }
 
+	/**
+	 * Remove race category
+	 * 
+	 * @param clazz
+	 */
+	public void removeCategory(int clazz) {
+		categories.remove(new Integer(clazz));	
+	}
+	
+	public void addAgeGroup(int year) {
+		groups.add(new Integer(year));
+	}
+	
+	public void removeAgeGroup(int year) {
+		groups.remove(new Integer(year));
+	}
+	
+	public int[] getAgeGroups() {
+		int[] array = new int[groups.size()];
+
+		for (int i = 0; i < groups.size(); i++) {
+			array[i] = ((Integer) groups.get(i)).intValue();
+		}
+
+		return array;
+	}
+	
     /**
      * Add race property
      *
@@ -446,18 +472,6 @@ public class Race
                     this.gender));
         }
 
-        // maxAge
-        if (maxAge != null) {
-            el.addContent(new Element("max-age", Invitation.NAMESPACE).setText(
-                    "" + this.maxAge));
-        }
-
-        // minAge
-        if (minAge != null) {
-            el.addContent(new Element("min-age", Invitation.NAMESPACE).setText(
-                    "" + this.minAge));
-        }
-
         // distance
         el.addContent(new Element("distance", Invitation.NAMESPACE).setText("" +
                 this.distance).setAttribute("unit", distanceUnit));
@@ -465,23 +479,31 @@ public class Race
         // classes
         Element classes = new Element("classes", Invitation.NAMESPACE);
 
-        for (int i = 0; i < getClasses().length; i++) {
+        for (int i = 0; i < getCategories().length; i++) {
             classes.addContent(new Element("class", Invitation.NAMESPACE).setText(
-                    "" + getClasses()[i]));
+                    "" + getCategories()[i]));
         }
 
         el.addContent(classes);
 
-        // rules
-        Element rules = new Element("rules", Invitation.NAMESPACE);
-        Iterator rulesIt = getProperties().iterator();
+        // contraints
+        Element constraints = new Element("constraints", Invitation.NAMESPACE);
+        Iterator constraintsIt = getProperties().iterator();
 
-        while (rulesIt.hasNext()) {
-            rules.addContent(new Element("rule", Invitation.NAMESPACE).setText(
-                    (String) rulesIt.next()));
+        while (constraintsIt.hasNext()) {
+            constraints.addContent(new Element("constraint", Invitation.NAMESPACE).setText(
+                    (String) constraintsIt.next()));
         }
 
-        el.addContent(rules);
+        el.addContent(constraints);
+
+		// age groups
+		Element groups = new Element("age-groups", Invitation.NAMESPACE);
+		for (int i = 0; i < getAgeGroups().length; i++) {
+			groups.addContent(new Element("age-group", Invitation.NAMESPACE).setText(
+					"" + getAgeGroups()[i]));
+		}
+		el.addContent(groups);
 
         // costs
         if (costs != null) {
@@ -517,43 +539,4 @@ public class Race
         return gender;
     }
 
-    /**
-     * Sets max age
-     *
-     * @param string max age
-     */
-    public void setMaxAge(String string)
-    {
-        maxAge = string;
-    }
-
-    /**
-     * Returns max age
-     *
-     * @return
-     */
-    public String getMaxAge()
-    {
-        return maxAge;
-    }
-
-    /**
-     * Sets min age
-     *
-     * @param string min age
-     */
-    public void setMinAge(String string)
-    {
-        minAge = string;
-    }
-
-    /**
-     * Returns min age
-     *
-     * @return min age
-     */
-    public String getMinAge()
-    {
-        return minAge;
-    }
 }

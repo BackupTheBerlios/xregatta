@@ -70,8 +70,8 @@ public class XRegatta
 
         Race s = new Race();
         s.setId("1");
-        s.addClass(Race.I);
-        s.addClass(Race.II);
+        s.addCategory(Race.I);
+        s.addCategory(Race.II);
         s.setDate(new Date());
         s.setDistance(2000);
         s.setLightweight(true);
