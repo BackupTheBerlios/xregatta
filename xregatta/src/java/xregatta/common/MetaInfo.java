@@ -20,20 +20,20 @@
  */
 package xregatta.common;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.jdom.Element;
 import org.jdom.Namespace;
 
 import xregatta.XRegatta;
-import xregatta.invitation.Invitation;
 
 
 /**
  * MetaInfo
  *
  * @author Tammo van Lessen
- * @version $Id: MetaInfo.java,v 1.3 2003/07/26 00:47:13 vanto Exp $
+ * @version $Id: MetaInfo.java,v 1.4 2003/11/20 00:26:58 vanto Exp $
  */
 public class MetaInfo
 {
@@ -43,6 +43,9 @@ public class MetaInfo
             "http://purl.org/dc/elements/1.1");
 
     //~ Instance fields --------------------------------------------------------
+
+	private SimpleDateFormat formatter
+		 = new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ssz");
 
     private Date date = new Date();
     private String creator;
@@ -172,7 +175,7 @@ public class MetaInfo
      */
     public Element getElement(String prefix)
     {
-        Element el = new Element("meta", Invitation.NAMESPACE);
+        Element el = new Element("meta", XRegatta.NAMESPACE);
 
         el.addContent(new Element("title", DC_NAMESPACE).setText(title));
         el.addContent(new Element("subject", DC_NAMESPACE).setText(subject));
@@ -180,7 +183,7 @@ public class MetaInfo
                 description));
         el.addContent(new Element("publisher", DC_NAMESPACE).setText(publisher));
         el.addContent(new Element("date", DC_NAMESPACE).setText(
-                date.toGMTString()));
+                formatter.format(date)));
         el.addContent(new Element("creator", DC_NAMESPACE).setText(
                 XRegatta.CREATOR));
 

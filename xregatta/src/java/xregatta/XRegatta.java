@@ -44,6 +44,7 @@ public class XRegatta
 {
     //~ Static fields/initializers ---------------------------------------------
 
+	public static final String NAMESPACE = "http://xregatta.berlios.de/1.0";
     public static final String CREATOR = "xregatta 1.0";
 
     //~ Methods ----------------------------------------------------------------
@@ -111,10 +112,19 @@ public class XRegatta
         XMLOutputter outputter = new XMLOutputter("  ", true);
         outputter.setEncoding("ISO-8859-1");
 
-        Document xregatta = new Document(new Element("regattas",
-                    Invitation.NAMESPACE));
-        xregatta.getRootElement().addContent(mi.getElement(CREATOR));
-        xregatta.getRootElement().addContent(inv.getElement());
+        Document xregatta = new Document(new Element("xregatta",
+                    XRegatta.NAMESPACE));
+		Element root = xregatta.getRootElement();
+        root.addContent(mi.getElement(CREATOR));
+        
+        Element events = new Element("events", XRegatta.NAMESPACE);
+        root.addContent(events);
+        
+        Element event = new Element("event", XRegatta.NAMESPACE);
+        events.addContent(event);
+        
+        event.addContent(inv.getElement());
+        
         xregatta.getRootElement().addNamespaceDeclaration(MetaInfo.DC_NAMESPACE);
         outputter.output(xregatta, System.out);
 
