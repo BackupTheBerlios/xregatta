@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+
+  <!-- the version of maven's project object model -->
+  <pomVersion>3</pomVersion>
+  
+  <!-- a unique name for this project -->
+  <id>xregatta</id>
+  
+  <!-- a short but descriptive name for the project -->
+  <name>xregatta</name>
+  
+  <!-- The version of the project under development, e.g.
+       1.1, 1.2, 2.0-dev -->
+  <currentVersion>1.0</currentVersion>
+  
+  <!-- details about the organization that 'owns' the project -->
+  <organization>
+    <name>xregatta team</name>
+    <url>http://xregatta.berlios.de/</url>
+  </organization>
+  
+  <!-- the year the project started -->
+  <inceptionYear>2002</inceptionYear>
+  <package>xregatta</package>
+  <logo>http://xregatta.berlios.de/html/images/xregatta.jpg</logo>
+  <description>
+    electronic regatta standards  </description>
+  <!-- a short description of what the project does -->
+  <shortDescription>
+    electronic regatta standards
+  </shortDescription>
+
+  <!-- the project home page -->
+  <url>http://xregatta.berlios.de</url>
+<!--  <issueTrackingUrl>http://nagoya.apache.org/scarab/servlet/scarab/</issueTrackingUrl>
+  <siteAddress>jakarta.apache.org</siteAddress>
+  <siteDirectory>/www/maven.apache.org/reference/plugins/examples/</siteDirectory>
+  <distributionDirectory>/www/maven.apache.org/builds/</distributionDirectory> -->
+
+  <!-- the version control repository and http url for online access
+       the connection element has the form:
+       scm:<system>:<system specific connection string> -->
+  <repository>
+    <connection>scm:cvs:pserver:anonymous@cvs.berlios.de:/cvsroot/xregatta:xregatta</connection>
+    <url>http://cvs.berlios.de/cgi-bin/viewcvs.cgi/xregatta/xregatta/</url>
+  </repository>
+
+  <!-- any mailing lists for the project -->
+  <mailingLists/>
+  
+  <!-- who the developers are for the project -->
+  <developers>
+   <developer>
+      <name>Tammo van Lessen</name>
+      <id>vanto</id>
+      <email>vanto@users.berlios.de</email>
+      <roles>
+        <role>Chief Developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <!-- jar files the project is dependent on -->
+  <dependencies>
+     <dependency>
+      <id>jdom</id>
+      <version>b9</version>
+     </dependency>
+     <dependency>
+  </dependencies>
+  
+  <!-- build information for the project -->
+  <build>
+    <sourceDirectory>${basedir}/src/java</sourceDirectory>
+    <unitTestSourceDirectory>${basedir}/src/test</unitTestSourceDirectory>
+
+    <unitTest>
+      <includes>
+        <include>**/*Test.java</include>
+      </includes>
+    </unitTest>
+
+<!--    <resources>
+      <resource>
+        <directory>${basedir}/src/conf</directory>
+        <includes>
+          <include>*.properties</include>
+        </includes>
+      </resource>
+    </resources> -->
+  </build>
+
+
+</project>
+
