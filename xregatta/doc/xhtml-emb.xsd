@@ -23,7 +23,7 @@
 =========================================================================== 
 *	XMLSchema für eingebettete XHTML-Strukturen
 =========================================================================== 
-*	$Id: xhtml-emb.xsd,v 1.1 2003/05/05 12:06:19 vanto Exp $
+*	$Id: xhtml-emb.xsd,v 1.1.1.1 2003/05/05 12:06:19 vanto Exp $
 =========================================================================== 
 -->
 <xs:schema targetNamespace="http://roware.berlios.de/schema/xhtml-emb" 	xmlns="http://roware.berlios.de/schema/xhtml-emb" 
